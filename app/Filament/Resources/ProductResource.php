@@ -1,0 +1,110 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\ProductResource\Pages;
+use App\Models\Product;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+// --- TAMBAHAN PENTING (IMPORT CLASS) ---
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+// ---------------------------------------
+
+class ProductResource extends Resource
+{
+    protected static ?string $model = Product::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+
+                Select::make('category')
+                    ->options([
+                        'shoes' => 'Shoes',
+                        'clothes' => 'Clothes',
+                        'paint' => 'Paint',
+                        'bags' => 'Bags',
+                    ])
+                    ->required(),
+
+                TextInput::make('price')
+                    ->required()
+                    ->numeric()
+                    ->prefix('Rp'),
+
+                FileUpload::make('image')
+                    ->disk('public_uploads')
+                    ->directory('products')
+                    ->image()
+                    ->required(),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                // Sekarang ImageColumn sudah dikenali
+                ImageColumn::make('image')
+                    ->disk('public_uploads'),
+
+                // TextColumn juga sudah dikenali
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('category')
+                    ->sortable(),
+
+                TextColumn::make('price')
+                    ->money('IDR')
+                    ->sortable(),
+
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListProducts::route('/'),
+            'create' => Pages\CreateProduct::route('/create'),
+            'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+}
