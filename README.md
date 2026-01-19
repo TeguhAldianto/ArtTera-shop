@@ -39,22 +39,6 @@
 - **Database:** MySQL
 - **Assets:** Vite
 
----
-
-## 📸 Tangkapan Layar (Screenshots)
-
-| Halaman Utama | Halaman Produk |
-|:---:|:---:|
-| <img src="public/images/home.jpg" alt="Home Page" width="400"> | <img src="public/uploaded_img/sepatu1.jpeg" alt="Product" width="400"> |
-
-| Admin Dashboard | Keranjang Belanja |
-|:---:|:---:|
-| *Tambahkan screenshot admin di sini* | *Tambahkan screenshot cart di sini* |
-
-> *Catatan: Gambar di atas diambil dari aset yang tersedia di proyek.*
-
----
-
 ## 🚀 Instalasi & Konfigurasi
 
 Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer lokal:
