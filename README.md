@@ -148,6 +148,3 @@ Akses admin panel di: `http://localhost:8000/admin` (atau `/filamen` tergantung 
 ## 📄 Lisensi
 
 Proyek ini bersifat open-source dan tersedia di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
-Apakah ada fitur spesifik lain di ArtTera yang ingin kamu tonjolkan?
-
-```
