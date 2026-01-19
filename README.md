@@ -1,59 +1,153 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎨 ArtTera Shop - E-Commerce Platform
+
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![Filament](https://img.shields.io/badge/Filament-F28C3C?style=for-the-badge&logo=filament&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/logo.png" alt="ArtTera Logo" width="200">
 </p>
 
-## About Laravel
+**ArtTera Shop** adalah aplikasi web e-commerce yang dirancang untuk memasarkan berbagai produk kreatif, mulai dari fashion (sepatu, jaket) hingga karya seni (lukisan). Aplikasi ini menyediakan pengalaman belanja yang mulus bagi pelanggan dan panel admin yang canggih untuk pengelolaan toko.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🛍️ Sisi Pelanggan (Front-End)
+- **Halaman Utama & Galeri:** Menampilkan etalase produk yang menarik.
+- **Pencarian Produk:** Fitur pencarian untuk menemukan barang dengan cepat.
+- **Keranjang Belanja (Cart):** Manajemen item sebelum checkout.
+- **Checkout & Pesanan:** Proses pembelian dan riwayat pemesanan (`Orders`).
+- **Profil Pengguna:** Kelola informasi profil dan alamat pengiriman.
+- **Halaman Statis:** About Us, Contact, dan Gallery.
 
-## Learning Laravel
+### ⚙️ Panel Admin (Filament)
+- **Dashboard Statistik:** Ringkasan performa toko.
+- **Manajemen Produk:** Tambah, edit, dan hapus produk (termasuk upload gambar).
+- **Manajemen Pesanan:** Pantau status pesanan pelanggan.
+- **Autentikasi:** Login aman untuk admin dan pengguna.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Teknologi yang Digunakan
 
-## Laravel Sponsors
+- **Backend:** Laravel Framework
+- **Admin Panel:** FilamentPHP
+- **Frontend:** Blade Templates, Tailwind CSS
+- **Database:** MySQL
+- **Assets:** Vite
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 📸 Tangkapan Layar (Screenshots)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Halaman Utama | Halaman Produk |
+|:---:|:---:|
+| <img src="public/images/home.jpg" alt="Home Page" width="400"> | <img src="public/uploaded_img/sepatu1.jpeg" alt="Product" width="400"> |
 
-## Contributing
+| Admin Dashboard | Keranjang Belanja |
+|:---:|:---:|
+| *Tambahkan screenshot admin di sini* | *Tambahkan screenshot cart di sini* |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> *Catatan: Gambar di atas diambil dari aset yang tersedia di proyek.*
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Instalasi & Konfigurasi
 
-## Security Vulnerabilities
+Ikuti langkah-langkah berikut untuk menjalankan proyek di komputer lokal:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 1. Clone Repositori
+```bash
+git clone [https://github.com/TeguhAldianto/ArtTera-shop.git](https://github.com/TeguhAldianto/ArtTera-shop.git)
+cd ArtTera-shop
 
-## License
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 2. Install Dependencies
+
+```bash
+composer install
+npm install
+
+```
+
+### 3. Konfigurasi Environment
+
+Salin file konfigurasi dan sesuaikan dengan database lokal Anda:
+
+```bash
+cp .env.example .env
+
+```
+
+Buka file `.env` dan atur database:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=arttera_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+```
+
+### 4. Generate Key & Storage Link
+
+```bash
+php artisan key:generate
+php artisan storage:link
+
+```
+
+### 5. Migrasi Database & Seeder
+
+```bash
+php artisan migrate --seed
+
+```
+
+*(Opsional: Jika ada data dummy di seeder, ini akan memasukkannya ke database)*
+
+### 6. Jalankan Aplikasi
+
+Jalankan server Laravel dan Vite secara bersamaan (jika perlu):
+
+```bash
+npm run dev
+php artisan serve
+
+```
+
+Akses aplikasi di: `http://localhost:8000`
+Akses admin panel di: `http://localhost:8000/admin` (atau `/filamen` tergantung konfigurasi).
+
+---
+
+## 📂 Struktur Folder Penting
+
+* `app/Filament/` - Logika Panel Admin (Resource Produk & Order).
+* `resources/views/` - Tampilan antarmuka pengguna (Blade).
+* `public/uploaded_img/` - Penyimpanan gambar produk yang diunggah.
+* `public/images/` - Aset statis situs (Logo, Banner).
+
+---
+
+## 👨‍💻 Author
+
+**Teguh Aldianto**
+
+* 📧 Email: [aldinamanya08@gmail.com](mailto:aldinamanya08@gmail.com)
+* 💼 LinkedIn: [Teguh Aldianto](https://www.linkedin.com/in/teguh-aldianto-705653298)
+
+---
+
+## 📄 Lisensi
+
+Proyek ini bersifat open-source dan tersedia di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
+Apakah ada fitur spesifik lain di ArtTera yang ingin kamu tonjolkan?
+
+```
