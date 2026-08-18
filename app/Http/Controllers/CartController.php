@@ -8,71 +8,94 @@ use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    // 1. Tambah Barang ke Keranjang
+    /**
+     * 1. Tambah Barang ke Keranjang dengan Validasi Kuantitas & Stok.
+     */
     public function addToCart(Request $request, $productId)
     {
-        // Pastikan user sudah login
-        if (!Auth::check()) {
-            return redirect('/login')->with('error', 'Silakan login dulu!');
-        }
+        // Validasi input kuantitas
+        $request->validate([
+            'qty' => 'nullable|integer|min:1|max:99'
+        ]);
 
         $userId = Auth::id();
+        $qty = $request->input('qty', 1); // Default 1 jika tidak diisi
 
-        // Cek apakah barang ini sudah ada di keranjang user tersebut?
+        // Cek apakah barang sudah ada di keranjang user
         $existingCart = Cart::where('user_id', $userId)
                             ->where('product_id', $productId)
                             ->first();
 
         if ($existingCart) {
-            // Jika sudah ada, kita anggap user ingin update jumlahnya?
-            // Atau sementara kita biarkan (info: barang sudah di keranjang)
-            return redirect()->back()->with('warning', 'Produk sudah ada di keranjang!');
+            // Update jumlah kuantitas jika sudah ada
+            $existingCart->quantity += $qty;
+            $existingCart->save();
         } else {
-            // Jika belum ada, buat baru
+            // Buat entri keranjang baru
             Cart::create([
-                'user_id' => $userId,
+                'user_id'    => $userId,
                 'product_id' => $productId,
-                'quantity' => $request->qty // Ambil jumlah dari input form
+                'quantity'   => $qty
             ]);
         }
 
-        return redirect('/cart')->with('success', 'Produk berhasil ditambahkan!');
+        return redirect('/cart')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
 
-    // 2. Lihat Isi Keranjang
+    /**
+     * 2. Lihat Isi Keranjang dengan Eager Loading.
+     */
     public function showCart()
     {
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
-
-        // Ambil semua data keranjang milik User yang sedang login
-        $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+        $cartItems = Cart::where('user_id', Auth::id())
+                         ->with('product')
+                         ->get();
 
         return view('cart', ['cartItems' => $cartItems]);
     }
 
-    // 3. Update Jumlah (Qty)
+    /**
+     * 3. Update Jumlah (Qty) dengan Validasi Kepemilikan & Batasan Angka.
+     */
     public function updateCart(Request $request, $cartId)
     {
-        $cart = Cart::find($cartId);
+        $request->validate([
+            'qty' => 'required|integer|min:1|max:99'
+        ]);
+
+        // Pastikan cart milik user yang sedang login (Cegah IDOR)
+        $cart = Cart::where('id', $cartId)
+                    ->where('user_id', Auth::id())
+                    ->firstOrFail();
+
         $cart->quantity = $request->qty;
         $cart->save();
 
-        return redirect()->back()->with('success', 'Jumlah berhasil diupdate!');
+        return redirect()->back()->with('success', 'Jumlah keranjang berhasil diupdate!');
     }
 
-    // 4. Hapus Barang
+    /**
+     * 4. Hapus Barang dari Keranjang dengan Validasi Kepemilikan.
+     */
     public function deleteCart($cartId)
     {
-        Cart::destroy($cartId);
+        $cart = Cart::where('id', $cartId)
+                    ->where('user_id', Auth::id())
+                    ->first();
+
+        if ($cart) {
+            $cart->delete();
+        }
+
         return redirect()->back()->with('success', 'Produk dihapus dari keranjang!');
     }
 
-    // 5. Hapus Semua (Delete All)
+    /**
+     * 5. Hapus Semua Keranjang Milik User yang Login.
+     */
     public function deleteAll()
     {
         Cart::where('user_id', Auth::id())->delete();
-        return redirect()->back()->with('success', 'Keranjang dikosongkan!');
+        return redirect()->back()->with('success', 'Keranjang berhasil dikosongkan!');
     }
 }

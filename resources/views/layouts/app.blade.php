@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'ArtTera')</title>
+
     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
@@ -15,41 +20,55 @@
 
     <header class="header">
         <section class="flex">
-            <a href="{{ url('/') }}" class="logo">ArtTera</a>
+            <a href="{{ url('/') }}" class="logo">ArtTera<span>.</span></a>
 
             <nav class="navbar">
                 <a href="{{ url('/') }}">Home</a>
-                <a href="{{ url('/about') }}">About Us</a>
+                <a href="{{ url('/about') }}">About</a>
                 <a href="{{ url('/gallery') }}">Gallery</a>
                 <a href="{{ url('/orders') }}">Orders</a>
                 <a href="{{ url('/contact') }}">Contact</a>
             </nav>
 
             <div class="icons">
-                <a href="{{ url('/search') }}"><i class="fas fa-search"></i></a>
-                <a href="{{ url('/cart') }}"><i class="fas fa-shopping-cart"></i><span>(3)</span></a>
-                <div id="user-btn" class="fas fa-user"></div>
-                <div id="menu-btn" class="fas fa-bars"></div>
+                <a href="{{ url('/search') }}" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+
+                @php
+                    $cartCount = 0;
+                    if(Auth::check()){
+                        $cartCount = \App\Models\Cart::where('user_id', Auth::id())->count();
+                    }
+                @endphp
+
+                <a href="{{ url('/cart') }}" aria-label="Shopping Cart"><i class="fas fa-shopping-cart" aria-hidden="true"></i><span>({{ $cartCount }})</span></a>
+                <button type="button" id="user-btn" aria-label="User Profile" class="fas fa-user" style="background:none;border:none;cursor:pointer;font-size:inherit;color:inherit;"></button>
+                <button type="button" id="menu-btn" aria-label="Menu" class="fas fa-bars" style="background:none;border:none;cursor:pointer;font-size:inherit;color:inherit;"></button>
             </div>
 
             <div class="profile">
                 @auth
-                    <p class="name">{{ Auth::user()->name }}</p>
-                    <div class="flex">
-                        <a href="{{ url('/profile') }}" class="btn">profile</a>
+                    {{-- PERBAIKAN: Definisi variabel $user agar editor tidak error --}}
+                    @php
+                        /** @var \App\Models\User $user */
+                        $user = Auth::user();
+                    @endphp
 
-                        <form action="{{ route('logout') }}" method="post" style="display:inline;">
+                    <p class="name">{{ $user->name }}</p>
+                    <div class="flex">
+                        <a href="{{ route('profile') }}" class="btn">Profile</a>
+
+                        <form action="{{ route('logout') }}" method="post" style="display:inline; width:100%;">
                             @csrf
-                            <button type="submit" class="delete-btn" style="width:100%;">logout</button>
+                            <button type="submit" class="delete-btn" style="width:100%;">Logout</button>
                         </form>
                     </div>
                 @endauth
 
                 @guest
-                    <p class="name">Guest</p>
+                    <p class="name">Guest Account</p>
                     <p class="account">
-                        <a href="{{ route('login') }}">login</a> or
-                        <a href="{{ route('register') }}">register</a>
+                        <a href="{{ route('login') }}">Login</a> or
+                        <a href="{{ route('register') }}">Register</a>
                     </p>
                 @endguest
             </div>
@@ -63,27 +82,27 @@
     <footer class="footer">
         <section class="box-container">
             <div class="box">
-                <img src="{{ asset('images/email-icon.png') }}" alt="">
-                <h3>our email</h3>
+                <i class="fas fa-envelope"></i>
+                <h3>Our Email</h3>
                 <a href="mailto:artteramarket@gmail.com">artteramarket@gmail.com</a>
             </div>
             <div class="box">
-                <img src="{{ asset('images/clock-icon.png') }}" alt="">
-                <h3>opening hours</h3>
-                <p>24 hours</p>
+                <i class="fas fa-clock"></i>
+                <h3>Opening Hours</h3>
+                <p>24 Hours Online</p>
             </div>
             <div class="box">
-                <img src="{{ asset('images/map-icon.png') }}" alt="">
-                <h3>our address</h3>
-                <a href="#">Jawa Timur, indonesia</a>
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>Our Address</h3>
+                <a href="#">Jawa Timur, Indonesia</a>
             </div>
             <div class="box">
-                <img src="{{ asset('images/phone-icon.png') }}" alt="">
-                <h3>our number</h3>
+                <i class="fas fa-phone"></i>
+                <h3>Phone Number</h3>
                 <a href="tel:1234567890">+62 888-8888-8888</a>
             </div>
         </section>
-        <div class="credit">© copyright @ 2025 by <span>ArtTera</span> | all rights reserved!</div>
+        <div class="credit">© 2026 <span>ArtTera</span> | All Rights Reserved</div>
     </footer>
 
     <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>

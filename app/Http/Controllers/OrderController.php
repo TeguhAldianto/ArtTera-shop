@@ -7,94 +7,132 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    // 1. Tampilkan Halaman Checkout
+    /**
+     * Tampilkan Halaman Checkout.
+     */
     public function checkout()
     {
         $userId = Auth::id();
 
-        // Ambil keranjang user
+        // Ambil keranjang user beserta produk, pastikan produk tidak null
         $cartItems = Cart::where('user_id', $userId)->with('product')->get();
 
+        // Filter item yang produknya sudah terhapus
+        $cartItems = $cartItems->filter(fn($item) => $item->product !== null);
+
         if ($cartItems->isEmpty()) {
-            return redirect('/cart')->with('error', 'Keranjang Anda kosong!');
+            return redirect('/cart')->with('error', 'Keranjang Anda kosong atau produk tidak tersedia!');
         }
 
         return view('checkout', ['cartItems' => $cartItems]);
     }
 
-    // 2. Proses Pemesanan (Place Order)
+    /**
+     * Proses Pemesanan (Place Order) dengan Database Transaction & Stok Check.
+     */
     public function placeOrder(Request $request)
     {
+        // 1. Validasi Input Lengkap & Kuantitas
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'number'   => 'required|string|max:20',
+            'email'    => 'required|email|max:255',
+            'method'   => 'required|string',
+            'flat'     => 'required|string|max:255',
+            'street'   => 'required|string|max:255',
+            'city'     => 'required|string|max:255',
+            'state'    => 'required|string|max:255',
+            'country'  => 'required|string|max:255',
+            'pin_code' => 'required|string|max:20',
+        ]);
+
         $userId = Auth::id();
-        $cartItems = Cart::where('user_id', $userId)->get();
+        $cartItems = Cart::where('user_id', $userId)->with('product')->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect('/cart');
+            return redirect('/cart')->with('error', 'Keranjang belanja Anda kosong.');
         }
 
-        // Validasi Input
-        $request->validate([
-            'name' => 'required',
-            'number' => 'required',
-            'email' => 'required|email',
-            'method' => 'required', // Ini adalah 'payment method'
-            'flat' => 'required',
-            'street' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'country' => 'required',
-            'pin_code' => 'required',
-        ]);
+        // 2. Gunakan Database Transaction untuk Menjaga Integritas Data (Atomic)
+        return DB::transaction(function () use ($userId, $request, $cartItems) {
+            $grandTotal = 0;
 
-        // Hitung Total Harga
-        $grandTotal = 0;
-        foreach ($cartItems as $item) {
-            $grandTotal += ($item->product->price * $item->quantity);
-        }
+            foreach ($cartItems as $item) {
+                if (!$item->product) {
+                    continue; // Lewati jika produk sudah dihapus admin
+                }
 
-        // Gabungkan Alamat
-        $fullAddress = "{$request->flat}, {$request->street}, {$request->city}, {$request->state}, {$request->country} - {$request->pin_code}";
+                // Cek Stok Produk
+                if (isset($item->product->stock) && $item->product->stock < $item->quantity) {
+                    throw new \Exception("Stok untuk produk '{$item->product->name}' tidak mencukupi.");
+                }
 
-        // A. Simpan ke Tabel Orders
-        $order = Order::create([
-            'user_id' => $userId,
-            'name' => $request->name,
-            'number' => $request->number,
-            'email' => $request->email,
+                $grandTotal += ($item->product->price * $item->quantity);
+            }
 
-            // PERBAIKAN PENTING DI SINI:
-            // Menggunakan input('method') agar tidak bentrok dengan properti sistem
-            'method' => $request->input('method'),
+            if ($grandTotal <= 0) {
+                return redirect('/cart')->with('error', 'Total belanja tidak valid.');
+            }
 
-            'address' => $fullAddress,
-            'total_price' => $grandTotal,
-            'payment_status' => 'pending'
-        ]);
+            // Gabungkan Alamat dengan Aman
+            $fullAddress = implode(', ', [
+                $request->flat,
+                $request->street,
+                $request->city,
+                $request->state,
+                $request->country
+            ]) . " - {$request->pin_code}";
 
-        // B. Pindahkan Item Keranjang ke Order Items
-        foreach ($cartItems as $item) {
-            OrderItem::create([
-                // Menggunakan getKey() agar ID terbaca dengan aman
-                'order_id' => $order->getKey(),
-                'product_id' => $item->product_id,
-                'price' => $item->product->price,
-                'quantity' => $item->quantity,
+            // A. Simpan ke Tabel Orders
+            $order = Order::create([
+                'user_id'        => $userId,
+                'name'           => $request->name,
+                'number'         => $request->number,
+                'email'          => $request->email,
+                'method'         => $request->input('method'),
+                'address'        => $fullAddress,
+                'total_price'    => $grandTotal,
+                'payment_status' => 'pending'
             ]);
-        }
 
-        // C. Kosongkan Keranjang (Troli)
-        Cart::where('user_id', $userId)->delete();
+            // B. Pindahkan Item Keranjang ke Order Items & Kurangi Stok (opsional)
+            foreach ($cartItems as $item) {
+                if (!$item->product) continue;
 
-        return redirect('/orders')->with('success', 'Pesanan berhasil dibuat!');
+                OrderItem::create([
+                    'order_id'   => $order->getKey(),
+                    'product_id' => $item->product_id,
+                    'price'      => $item->product->price,
+                    'quantity'   => $item->quantity,
+                ]);
+
+                // Kurangi stok produk jika kolom stock tersedia
+                if (isset($item->product->stock)) {
+                    $item->product->decrement('stock', $item->quantity);
+                }
+            }
+
+            // C. Kosongkan Keranjang Belanja User
+            Cart::where('user_id', $userId)->delete();
+
+            return redirect('/orders')->with('success', 'Pesanan berhasil dibuat!');
+        });
     }
 
-    // 3. Lihat Riwayat Pesanan
+    /**
+     * Lihat Riwayat Pesanan dengan Eager Loading untuk Mencegah N+1 Query.
+     */
     public function orders()
     {
-        $orders = Order::where('user_id', Auth::id())->latest()->get();
+        $orders = Order::where('user_id', Auth::id())
+            ->with('items.product')
+            ->latest()
+            ->get();
+
         return view('orders', ['orders' => $orders]);
     }
 }

@@ -5,13 +5,17 @@
 
     <section class="form-container">
         <form action="{{ route('login.post') }}" method="post">
-            @csrf <h3>login now</h3>
+            @csrf
+            <h3>Login Now</h3>
 
-            <input type="email" name="email" required placeholder="enter your email" maxlength="50" class="box">
-            <input type="password" name="password" required placeholder="enter your password" maxlength="20" class="box">
+            <label for="email" class="sr-only" style="display:none;">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="enter your email…" maxlength="50" class="box" autocomplete="email" spellcheck="false">
 
-            <input type="submit" value="login now" class="btn" name="submit">
-            <p>don't have an account? <a href="{{ url('/register') }}">register now</a></p>
+            <label for="password" class="sr-only" style="display:none;">Password</label>
+            <input type="password" id="password" name="password" required placeholder="enter your password…" maxlength="20" class="box" autocomplete="current-password">
+
+            <button type="submit" class="btn" name="submit" style="width:100%;">Login Now</button>
+            <p>Don't have an account? <a href="{{ url('/register') }}">Register now</a></p>
         </form>
     </section>
 

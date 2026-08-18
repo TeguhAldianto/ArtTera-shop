@@ -11,7 +11,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\App\Services\AgentSkillManager::class, function ($app) {
+            $manager = new \App\Services\AgentSkillManager();
+            $manager->register(new \App\Services\AgentSkills\SystemInfoSkill());
+            return $manager;
+        });
     }
 
     /**

@@ -13,9 +13,13 @@
    font-family: 'Rubik', sans-serif;
    margin:0; padding:0;
    box-sizing: border-box;
-   outline: none; border:none;
    text-decoration: none;
-   transition: .2s linear;
+   transition: color .2s linear, background-color .2s linear, opacity .2s linear;
+}
+
+*:focus-visible{
+   outline: .2rem solid var(--yellow);
+   outline-offset: .2rem;
 }
 
 *::selection{
@@ -72,7 +76,7 @@ section{
 
 .delete-btn:hover,
 .btn:hover{
-   letter-spacing: .2rem;
+   opacity: .85;
 }
 
 .title{
