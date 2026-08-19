@@ -4,17 +4,17 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
-use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+// --- TAMBAHAN PENTING (IMPORT CLASS) ---
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-// --- TAMBAHAN PENTING (IMPORT CLASS) ---
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
 // ---------------------------------------
 
 class ProductResource extends Resource

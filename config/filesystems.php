@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -50,7 +50,7 @@ return [
         'public_uploads' => [
             'driver' => 'local',
             'root' => public_path('uploaded_img'), // Langsung ke folder public/uploaded_img
-            'url' => env('APP_URL') . '/uploaded_img',
+            'url' => env('APP_URL').'/uploaded_img',
             'visibility' => 'public',
             'throw' => false,
         ],

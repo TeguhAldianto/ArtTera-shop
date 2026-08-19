@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -11,6 +11,7 @@ class HomeController extends Controller
     public function index()
     {
         $products = Product::latest()->take(6)->get();
+
         return view('home', ['all_products' => $products]);
     }
 
@@ -18,6 +19,7 @@ class HomeController extends Controller
     public function gallery()
     {
         $products = Product::latest()->get();
+
         return view('gallery', ['all_products' => $products]);
     }
 
@@ -25,6 +27,7 @@ class HomeController extends Controller
     public function show($id)
     {
         $product = Product::findOrFail($id);
+
         return view('product_details', ['product' => $product]);
     }
 

@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ArtTera - Marketplace Seni Digital & Koleksi Eksklusif">
     <title>@yield('title', 'ArtTera')</title>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
@@ -14,9 +15,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    @stack('styles')
 </head>
 
 <body>
+    <a href="#main-content" class="sr-only" style="position:absolute;left:-9999px;">Langsung ke konten utama</a>
 
     <header class="header">
         <section class="flex">
@@ -47,7 +50,6 @@
 
             <div class="profile">
                 @auth
-                    {{-- PERBAIKAN: Definisi variabel $user agar editor tidak error --}}
                     @php
                         /** @var \App\Models\User $user */
                         $user = Auth::user();
@@ -75,7 +77,7 @@
         </section>
     </header>
 
-    <main>
+    <main id="main-content">
         @yield('content')
     </main>
 

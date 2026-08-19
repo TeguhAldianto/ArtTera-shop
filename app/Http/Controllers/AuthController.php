@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User; // Panggil Buku Tamu (Model User)
-use Illuminate\Support\Facades\Hash; // Alat pengacak password
-use Illuminate\Support\Facades\Auth; // Alat autentikasi utama
+use App\Models\User;
+use Illuminate\Http\Request; // Panggil Buku Tamu (Model User)
+use Illuminate\Support\Facades\Auth; // Alat pengacak password
+use Illuminate\Support\Facades\Hash; // Alat autentikasi utama
 
 class AuthController extends Controller
 {
@@ -38,7 +38,6 @@ class AuthController extends Controller
         return redirect('/login')->with('success', 'Registrasi berhasil, silakan login!');
     }
 
-
     // === BAGIAN LOGIN ===
 
     // 1. Tampilkan Formulir
@@ -59,6 +58,7 @@ class AuthController extends Controller
         // Cek apakah cocok dengan database?
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); // Perbarui sesi agar aman
+
             return redirect()->intended('/'); // Masuk ke Home
         }
 
@@ -74,6 +74,7 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 }

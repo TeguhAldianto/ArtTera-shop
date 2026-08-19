@@ -15,7 +15,7 @@ class AgentSkillManager
 
     public function execute(string $name, array $parameters = []): mixed
     {
-        if (!isset($this->skills[$name])) {
+        if (! isset($this->skills[$name])) {
             throw new \Exception("Skill [{$name}] not found.");
         }
 

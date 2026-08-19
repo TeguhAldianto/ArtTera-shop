@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Cart;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -15,7 +15,7 @@ class CartController extends Controller
     {
         // Validasi input kuantitas
         $request->validate([
-            'qty' => 'nullable|integer|min:1|max:99'
+            'qty' => 'nullable|integer|min:1|max:99',
         ]);
 
         $userId = Auth::id();
@@ -23,8 +23,8 @@ class CartController extends Controller
 
         // Cek apakah barang sudah ada di keranjang user
         $existingCart = Cart::where('user_id', $userId)
-                            ->where('product_id', $productId)
-                            ->first();
+            ->where('product_id', $productId)
+            ->first();
 
         if ($existingCart) {
             // Update jumlah kuantitas jika sudah ada
@@ -33,9 +33,9 @@ class CartController extends Controller
         } else {
             // Buat entri keranjang baru
             Cart::create([
-                'user_id'    => $userId,
+                'user_id' => $userId,
                 'product_id' => $productId,
-                'quantity'   => $qty
+                'quantity' => $qty,
             ]);
         }
 
@@ -48,8 +48,8 @@ class CartController extends Controller
     public function showCart()
     {
         $cartItems = Cart::where('user_id', Auth::id())
-                         ->with('product')
-                         ->get();
+            ->with('product')
+            ->get();
 
         return view('cart', ['cartItems' => $cartItems]);
     }
@@ -60,13 +60,13 @@ class CartController extends Controller
     public function updateCart(Request $request, $cartId)
     {
         $request->validate([
-            'qty' => 'required|integer|min:1|max:99'
+            'qty' => 'required|integer|min:1|max:99',
         ]);
 
         // Pastikan cart milik user yang sedang login (Cegah IDOR)
         $cart = Cart::where('id', $cartId)
-                    ->where('user_id', Auth::id())
-                    ->firstOrFail();
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
 
         $cart->quantity = $request->qty;
         $cart->save();
@@ -80,8 +80,8 @@ class CartController extends Controller
     public function deleteCart($cartId)
     {
         $cart = Cart::where('id', $cartId)
-                    ->where('user_id', Auth::id())
-                    ->first();
+            ->where('user_id', Auth::id())
+            ->first();
 
         if ($cart) {
             $cart->delete();
@@ -96,6 +96,7 @@ class CartController extends Controller
     public function deleteAll()
     {
         Cart::where('user_id', Auth::id())->delete();
+
         return redirect()->back()->with('success', 'Keranjang berhasil dikosongkan!');
     }
 }

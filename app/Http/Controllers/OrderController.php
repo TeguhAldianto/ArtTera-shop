@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +22,7 @@ class OrderController extends Controller
         $cartItems = Cart::where('user_id', $userId)->with('product')->get();
 
         // Filter item yang produknya sudah terhapus
-        $cartItems = $cartItems->filter(fn($item) => $item->product !== null);
+        $cartItems = $cartItems->filter(fn ($item) => $item->product !== null);
 
         if ($cartItems->isEmpty()) {
             return redirect('/cart')->with('error', 'Keranjang Anda kosong atau produk tidak tersedia!');
@@ -38,15 +38,15 @@ class OrderController extends Controller
     {
         // 1. Validasi Input Lengkap & Kuantitas
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'number'   => 'required|string|max:20',
-            'email'    => 'required|email|max:255',
-            'method'   => 'required|string',
-            'flat'     => 'required|string|max:255',
-            'street'   => 'required|string|max:255',
-            'city'     => 'required|string|max:255',
-            'state'    => 'required|string|max:255',
-            'country'  => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'number' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'method' => 'required|string',
+            'flat' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
             'pin_code' => 'required|string|max:20',
         ]);
 
@@ -62,7 +62,7 @@ class OrderController extends Controller
             $grandTotal = 0;
 
             foreach ($cartItems as $item) {
-                if (!$item->product) {
+                if (! $item->product) {
                     continue; // Lewati jika produk sudah dihapus admin
                 }
 
@@ -84,30 +84,32 @@ class OrderController extends Controller
                 $request->street,
                 $request->city,
                 $request->state,
-                $request->country
-            ]) . " - {$request->pin_code}";
+                $request->country,
+            ])." - {$request->pin_code}";
 
             // A. Simpan ke Tabel Orders
             $order = Order::create([
-                'user_id'        => $userId,
-                'name'           => $request->name,
-                'number'         => $request->number,
-                'email'          => $request->email,
-                'method'         => $request->input('method'),
-                'address'        => $fullAddress,
-                'total_price'    => $grandTotal,
-                'payment_status' => 'pending'
+                'user_id' => $userId,
+                'name' => $request->name,
+                'number' => $request->number,
+                'email' => $request->email,
+                'method' => $request->input('method'),
+                'address' => $fullAddress,
+                'total_price' => $grandTotal,
+                'payment_status' => 'pending',
             ]);
 
             // B. Pindahkan Item Keranjang ke Order Items & Kurangi Stok (opsional)
             foreach ($cartItems as $item) {
-                if (!$item->product) continue;
+                if (! $item->product) {
+                    continue;
+                }
 
                 OrderItem::create([
-                    'order_id'   => $order->getKey(),
+                    'order_id' => $order->getKey(),
                     'product_id' => $item->product_id,
-                    'price'      => $item->product->price,
-                    'quantity'   => $item->quantity,
+                    'price' => $item->product->price,
+                    'quantity' => $item->quantity,
                 ]);
 
                 // Kurangi stok produk jika kolom stock tersedia

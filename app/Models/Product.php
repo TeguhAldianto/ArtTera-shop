@@ -15,4 +15,4 @@ class Product extends Model
 
     // ATAU jika ingin spesifik (pilih salah satu cara), pakai yang ini:
     // protected $fillable = ['name', 'category', 'price', 'image'];
-}   
+}

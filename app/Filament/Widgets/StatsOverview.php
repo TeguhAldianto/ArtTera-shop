@@ -25,7 +25,7 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-shopping-cart')
                 ->color('warning'),
 
-            Stat::make('Total Revenue', 'Rp ' . number_format(Order::where('payment_status', 'completed')->sum('total_price'), 0, ',', '.'))
+            Stat::make('Total Revenue', 'Rp '.number_format(Order::where('payment_status', 'completed')->sum('total_price'), 0, ',', '.'))
                 ->description('From completed orders')
                 ->descriptionIcon('heroicon-m-currency-dollar')
                 ->color('primary'),

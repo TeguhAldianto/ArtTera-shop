@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class UserController extends Controller
 {
@@ -29,7 +29,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
             'number' => 'required|numeric',
         ]);
 
@@ -41,7 +41,7 @@ class UserController extends Controller
         // Cek jika user mau ganti password
         if ($request->filled('old_pass') && $request->filled('new_pass')) {
             // Cek password lama benar gak?
-            if (!Hash::check($request->old_pass, $user->password)) {
+            if (! Hash::check($request->old_pass, $user->password)) {
                 return back()->with('error', 'Password lama salah!');
             }
             // Cek konfirmasi password baru
